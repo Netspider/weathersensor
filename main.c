@@ -59,6 +59,15 @@
 #define led_off     PORT_LED &= ~(1 << LED);
 
 
+void blinknum(uint8_t num) {
+	for(uint8_t i=num;i>0;i--) {
+		led_on;
+		_delay_ms(300);
+		led_off;
+		_delay_ms(300);
+	}
+}
+
 int main(void)
 {
 	am2302_init();
@@ -80,12 +89,11 @@ int main(void)
 		uint8_t error = am2302(&humidity, &temp); // get data from am2302
 		if (!error)
 		{
-			kw9010_send(temp, humidity/10, 1, 0x23, 0);
+//			kw9010_send(temp, humidity/10, 1, 0x23, 0);
 
-			led_on;
-			for(uint8_t temploop=humidity/10; temploop>0; temploop--)
-				_delay_ms(100);
-			led_off;
+			blinknum(temp/10);
+			_delay_ms(500);
+			blinknum(humidity/10);
 		}
 		else
 		{
@@ -106,9 +114,9 @@ int main(void)
 			}
 		}
 
-        float temp_po = ds1820_read_temp(DS1820);
-		kw9010_send((int16_t) temp_po*10, 0, 1, 0x23, 1);
-
+        int16_t temp_outside = ds1820_read_temp(DS1820);
+//		kw9010_send(temp_outside, 0, 1, 0x23, 1);
+		blinknum(temp_outside/10));
 		// wait one second
 		_delay_ms(1000);
 	}

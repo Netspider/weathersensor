@@ -122,12 +122,12 @@ void ds1820_wr_byte(uint8_t wrbyte,uint8_t used_pin)
 //-----------------------------------------
 // Read temperature
 //-----------------------------------------
-float  ds1820_read_temp(uint8_t used_pin)	
+int16_t ds1820_read_temp(uint8_t used_pin)
 {
 	uint8_t error,i;
 	uint16_t j=0;
     uint8_t scratchpad[9];
-	float temp=0;
+	int16_t temp=0;
 	scratchpad[0]=0;
 	scratchpad[1]=0;
 	scratchpad[2]=0;
@@ -154,24 +154,21 @@ float  ds1820_read_temp(uint8_t used_pin)
 	       scratchpad[i]=ds1820_re_byte(used_pin); 					//9. read one DS18S20 byte
 	    }
 	}
-	if(scratchpad[1]==0x00 && scratchpad[7]!=0){					//Value pos.
-		scratchpad[0]=scratchpad[0] >> 1;
-		temp=(scratchpad[0]-0.25f+(((float)scratchpad[7]-(float)scratchpad[6])/(float)scratchpad[7]));
-		temp = (floor(temp*10.0+0.5)/10);							//Round value .x
 
+	// rewrote temp calculation, old one only for ds18s20?
+
+	temp = scratchpad[0];  // LSB
+	temp |= ( (int16_t)scratchpad[1] ) << 8; // MSB
+
+	int8_t sign = 1;
+	if ( temp & 0x8000 ) {
+		sign = -1;
+		temp ^= 0xffff;
+		temp++;
 	}
-	if(scratchpad[1]!=0x00){										//Value negative
-		uint8_t tmp;
-		tmp =scratchpad[0];											//Save Kommabit
-		tmp= ~ tmp;
-		tmp= tmp >> 1;
-		temp = (-1)*(tmp+1);
-		if ((scratchpad[0]&0b00000001)==1){
-			temp=temp+0.5;
-		}
-
-	}
-
+	
+	int8_t temp_frac = temp & 0x000F;
+	temp = sign * (((temp >> 4) * 10) + ((temp_frac*10) >> 4));
 	return temp;
 }
 //-----------------------------------------

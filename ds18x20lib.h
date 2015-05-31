@@ -29,7 +29,6 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <math.h>
 
 #ifndef _DS18X20LIB_h_
 #define _DS18X20LIB_h_
@@ -50,7 +49,7 @@ void ds1820_wr_bit(uint8_t,uint8_t);
 uint8_t ds1820_re_bit(uint8_t);
 uint8_t ds1820_re_byte(uint8_t);
 void ds1820_wr_byte(uint8_t,uint8_t);
-float ds1820_read_temp(uint8_t);
+int16_t ds1820_read_temp(uint8_t);
 void  ds1820_init(uint8_t);
 
 #endif
