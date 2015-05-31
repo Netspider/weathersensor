@@ -1,20 +1,36 @@
 /*
- * main.c
- *
- * Created on: 13.03.2013
- *     Author: Pascal Gollor
- *        web: http://www.pgollor.de
- *
- * Dieses Werk ist unter einer Creative Commons Lizenz vom Typ
- * Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 3.0 Deutschland zugänglich.
- * Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
- * http://creativecommons.org/licenses/by-nc-sa/3.0/de/ oder wenden Sie sich
- * brieflich an Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
- *
- *
- * testet with:
- * - avr-gcc 4.3.4
- * - Atmega8 @ 8 MHz
+ * ATTINY85 Pins:
+ * 
+ * 1 RESET?
+ * 2 KW9010_DATA
+ * 3 AM2302_DATA
+ * 4 GND
+ * 5 DS18B20_DATA
+ * 6 ?
+ * 7 ?
+ * 8 VCC
+ * 
+ * Strom-Messung:
+ * AM2302   3200 uA (Data - 10k - VCC, Data GND, max)
+ * DS18B20  1080 uA (Data - 4k7 - VCC, Data GND, max)
+ * FS1000A 12000 uA (Data - VCC)
+ * 
+ * AM2302   1600 uA (Data - 10k - VCC, Data GND)
+ * DS18B20  1080 uA (Data - 4k7 - VCC, Data GND)
+ * FS1000A    10 uA (Data - open)
+ * 
+ * AM2302     51 uA (Data - 10k - VCC, Data open)
+ * DS18B20     4 uA (Data - 4k7 - VCC, Data open)
+ * FS1000A     0 uA (Data - GND)
+ * 
+ * ATTINY85 1MHz 5V + AM2302: 1900 uA
+ * http://oregonembedded.com/batterycalc.htm
+ * 
+ * AM2302:  2s 2000uA, 1s 50uA
+ * DS18B20: 1s 1080uA, 2s 4uA
+ * FS1000A: 2s 10uA, 1s 6000uA ( (12000+0)/2 )
+ * (2000+2000+50+1080+4+4+10+10+6000)/3 = 3719uA * 3s + 1900uA (ATTINY)
+ * 
  */
 
 

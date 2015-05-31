@@ -42,14 +42,14 @@ MCU = attiny85
 
 # Main Oscillator Frequency
 # This is only used to define F_OSC in all assembler and c-sources.
-F_OSC = 8000000
+F_OSC = 1000000
 
 BAUDRATE = 19200
 
 # http://www.engbedded.com/fusecalc/
 FUSE8 = -U lfuse:w:0xe2:m -U hfuse:w:0xd7:m -U efuse:w:0xff:m
 FUSE1 = -U lfuse:w:0x62:m -U hfuse:w:0xd7:m -U efuse:w:0xff:m
-FUSES = $(FUSE8)
+FUSES = $(FUSE1)
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
