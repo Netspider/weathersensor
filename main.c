@@ -116,7 +116,7 @@ int main(void)
 
         int16_t temp_outside = ds1820_read_temp(DS1820);
 //		kw9010_send(temp_outside, 0, 1, 0x23, 1);
-		blinknum(temp_outside/10));
+		blinknum(temp_outside/10);
 		// wait one second
 		_delay_ms(1000);
 	}
