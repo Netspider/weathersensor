@@ -20,29 +20,29 @@
 #ifndef KW9010_H_
 #define KW9010_H_
 
-//#include <avr/io.h>
+#include <avr/io.h>
 
 #define DDR_SENSOR   DDRB
 #define PORT_SENSOR  PORTB
 #define PIN_SENSOR   PINB
 #define SENSOR       PB3
 
+#define _timeSync 9000
+#define	_timeZero 2000
+#define	_timeOne 4000
+#define	_timeDummy 1000
+
 void kw9010_init(void);
-void kw9010_send(float temperature, float humidity, bool battery_ok, uint8_t id, uint8_t channel);
+void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t id, uint8_t channel);
 
 uint8_t _state;
-uint16_t _timeDummy;
-uint16_t _timeSync;
-uint16_t _timeZero;
-uint16_t _timeOne;
 uint8_t _repeatCount;
 
-void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
+void _kw9010_sendRaw(uint8_t data[], uint8_t numBits);
 uint8_t _kw9010_generateInternalID(uint8_t id, uint8_t channel);
 uint8_t _kw9010_generateChecksum(uint8_t data[], uint8_t numBits);
-inline void _kw9010_sendBit(int time1, int time2);
-inline void _kw9010_sendSync();
-inline void _kw9010_send0();
-inline void _kw9010_send1();
+void _kw9010_sendSync(void);
+void _kw9010_send0(void);
+void _kw9010_send1(void);
 
 #endif /* KW9010_H_ */

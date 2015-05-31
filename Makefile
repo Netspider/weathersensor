@@ -59,7 +59,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = am2302.c $(TARGET).c
+SRC = am2302.c kw9010.c $(TARGET).c
 
 
 # List Assembler source files here.

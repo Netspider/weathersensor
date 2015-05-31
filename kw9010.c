@@ -19,7 +19,6 @@
 
 #include "kw9010.h"
 
-#include <avr/io.h>
 #include <util/delay.h>
 
 #define SENSOR_data_out		DDR_SENSOR |= (1 << SENSOR)
@@ -36,10 +35,6 @@
 
 void kw9010_init(void)
 {
-	_timeSync = 9000;
-	_timeZero = 2000;
-	_timeOne = 4000;
-	_timeDummy = 1000;
 	_repeatCount = 3;
 	_state = 0;
 	return;
@@ -77,26 +72,41 @@ uint8_t _kw9010_generateChecksum(uint8_t data[], uint8_t numBits) {
 	return invSum;
 }
 
-inline void _kw9010_sendBit(int time1, int time2) {
-	// no need to change state as we would toggle twice
-	if( _state ) SENSOR_data_low else SENSOR_data_high;
-	_delay_us(time1);
-	if( _state ) SENSOR_data_high else SENSOR_data_low;
-	_delay_us(time2);
-}
-
-inline void _kw9010_sendSync() {
-	if( _state ) SENSOR_data_low else SENSOR_data_high;
+void _kw9010_sendSync(void) {
+	if( _state )
+		SENSOR_data_low;
+	else
+		SENSOR_data_high;
 	_delay_us(_timeSync);
 	_state = ! _state;
 }
 
-inline void _kw9010_send0() {
-	_kw9010_sendBit(_timeDummy, _timeZero);
+void _kw9010_send0(void) {
+	// no need to change state as we would toggle twice
+	if( _state )
+		SENSOR_data_low;
+	else
+		SENSOR_data_high;
+	_delay_us(_timeDummy);
+	if( _state )
+		SENSOR_data_high;
+	else
+		SENSOR_data_low;
+	_delay_us(_timeZero);
 }
 
-inline void _kw9010_send1() {
-	_kw9010_sendBit(_timeDummy, _timeOne);
+void _kw9010_send1(void) {
+	// no need to change state as we would toggle twice
+	if( _state )
+		SENSOR_data_low;
+	else
+		SENSOR_data_high;
+	_delay_us(_timeDummy);
+	if( _state )
+		SENSOR_data_high;
+	else
+		SENSOR_data_low;
+	_delay_us(_timeOne);
 }
 
 void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
@@ -119,7 +129,7 @@ void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
 	SENSOR_data_low;
 }
 
-void kw9010_send(float temperature, float humidity, uin8_t battery_ok, uint8_t id, uint8_t channel) {
+void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t id, uint8_t channel) {
   uint8_t data[9] = {0};
   data[0] = _kw9010_generateInternalID(id, channel);
   // battery ok?
