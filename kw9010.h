@@ -22,10 +22,10 @@
 
 #include <avr/io.h>
 
-#define DDR_SENSOR   DDRB
-#define PORT_SENSOR  PORTB
-#define PIN_SENSOR   PINB
-#define SENSOR       PB3
+#define DDR_KW9010   DDRB
+#define PORT_KW9010  PORTB
+#define PIN_KW9010   PINB
+#define KW9010       PB1
 
 #define _timeSync 9000
 #define	_timeZero 2000

@@ -21,12 +21,12 @@
 
 #include <util/delay.h>
 
-#define SENSOR_data_out		DDR_SENSOR |= (1 << SENSOR)
-#define SENSOR_data_in		DDR_SENSOR &= ~(1 << SENSOR)
-#define SENSOR_data_high	PORT_SENSOR |= (1 << SENSOR)
-#define SENSOR_data_low		PORT_SENSOR &= ~(1 << SENSOR)
-#define SENSOR_is_high		PIN_SENSOR & (1 << SENSOR)
-#define SENSOR_is_low		!(PIN_SENSOR & (1 << SENSOR))
+#define KW9010_data_out		DDR_KW9010 |= (1 << KW9010)
+#define KW9010_data_in		DDR_KW9010 &= ~(1 << KW9010)
+#define KW9010_data_high	PORT_KW9010 |= (1 << KW9010)
+#define KW9010_data_low		PORT_KW9010 &= ~(1 << KW9010)
+#define KW9010_is_high		PIN_KW9010 & (1 << KW9010)
+#define KW9010_is_low		!(PIN_KW9010 & (1 << KW9010))
 
 #define bitRead(value, bit) (((value) >> (bit)) & 0x01)
 #define bitSet(value, bit) ((value) |= (1UL << (bit)))
@@ -72,9 +72,9 @@ uint8_t _kw9010_generateChecksum(uint8_t data[], uint8_t numBits) {
 
 void _kw9010_sendSync(void) {
 	if( _state )
-		SENSOR_data_low;
+		KW9010_data_low;
 	else
-		SENSOR_data_high;
+		KW9010_data_high;
 	_delay_us(_timeSync);
 	_state = ! _state;
 }
@@ -82,34 +82,34 @@ void _kw9010_sendSync(void) {
 void _kw9010_send0(void) {
 	// no need to change state as we would toggle twice
 	if( _state )
-		SENSOR_data_low;
+		KW9010_data_low;
 	else
-		SENSOR_data_high;
+		KW9010_data_high;
 	_delay_us(_timeDummy);
 	if( _state )
-		SENSOR_data_high;
+		KW9010_data_high;
 	else
-		SENSOR_data_low;
+		KW9010_data_low;
 	_delay_us(_timeZero);
 }
 
 void _kw9010_send1(void) {
 	// no need to change state as we would toggle twice
 	if( _state )
-		SENSOR_data_low;
+		KW9010_data_low;
 	else
-		SENSOR_data_high;
+		KW9010_data_high;
 	_delay_us(_timeDummy);
 	if( _state )
-		SENSOR_data_high;
+		KW9010_data_high;
 	else
-		SENSOR_data_low;
+		KW9010_data_low;
 	_delay_us(_timeOne);
 }
 
 void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
 	_state = 0;
-	SENSOR_data_low;
+	KW9010_data_low;
 	// no buffering, saves some RAM
 	// hopefully fast enough
 	for(uint8_t count = 0; count < _repeatCount; count++) {
@@ -126,7 +126,7 @@ void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
 		}
 	}
 	_state = 0;
-	SENSOR_data_low;
+	KW9010_data_low;
 }
 
 void kw9010_send(int16_t temperature, uint8_t humidity, uint8_t battery_ok, uint8_t id, uint8_t channel) {

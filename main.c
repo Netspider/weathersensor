@@ -10,6 +10,16 @@
  * 7 ?
  * 8 VCC
  * 
+ * aktuell:
+ * 1     RESET
+ * 2 PB3 AM2302_DATA
+ * 3 PB4 LED
+ * 4     GND
+ * 5 PB0 DS18B20_DATA
+ * 6 PB1 KW9010_DATA
+ * 7 PB2 ?
+ * 8     VCC
+ * 
  * Strom-Messung:
  * AM2302   3200 uA (Data - 10k - VCC, Data GND, max)
  * DS18B20  1080 uA (Data - 4k7 - VCC, Data GND, max)
@@ -40,6 +50,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include "ds18x20lib.h"
 #include "am2302.h"
 #include "kw9010.h"
 
@@ -52,6 +63,8 @@ int main(void)
 {
 	am2302_init();
 	kw9010_init();
+	ds1820_init(DS1820);
+
 	DDR_LED |= (1 << LED); // define as output
 
 	led_off;
@@ -92,6 +105,9 @@ int main(void)
 				_delay_ms(300);
 			}
 		}
+
+        float temp_po = ds1820_read_temp(DS1820);
+		kw9010_send((int16_t) temp_po*10, 0, 1, 0x23, 1);
 
 		// wait one second
 		_delay_ms(1000);
