@@ -58,7 +58,7 @@
 #define led_on      PORT_LED |= (1 << LED);
 #define led_off     PORT_LED &= ~(1 << LED);
 
-
+/*
 void blinknum(uint8_t num) {
 	for(uint8_t i=num;i>0;i--) {
 		led_on;
@@ -68,15 +68,25 @@ void blinknum(uint8_t num) {
 	}
 }
 
+void blinknum_fast(uint8_t num) {
+	for(uint8_t i=num;i>0;i--) {
+		led_on;
+		_delay_ms(100);
+		led_off;
+		_delay_ms(100);
+	}
+}
+*/
+
 int main(void)
 {
 	am2302_init();
 	kw9010_init();
 	ds1820_init(DS1820);
 
-	DDR_LED |= (1 << LED); // define as output
+//	DDR_LED |= (1 << LED); // define as output
 
-	led_off;
+//	led_off;
 
  	sei();
 
@@ -89,11 +99,13 @@ int main(void)
 		uint8_t error = am2302(&humidity, &temp); // get data from am2302
 		if (!error)
 		{
-//			kw9010_send(temp, humidity/10, 1, 0x23, 0);
-
-			blinknum(temp/10);
+			kw9010_send(temp, humidity/10, 1, 0x23, 0);
+/*
+			blinknum_fast(1);
+			blinknum(temp/100);
 			_delay_ms(500);
-			blinknum(humidity/10);
+			blinknum_fast(2);
+			blinknum(humidity/100);
 		}
 		else
 		{
@@ -112,12 +124,27 @@ int main(void)
 				led_off;
 				_delay_ms(300);
 			}
-		}
+*/		}
 
         int16_t temp_outside = ds1820_read_temp(DS1820);
-//		kw9010_send(temp_outside, 0, 1, 0x23, 1);
-		blinknum(temp_outside/10);
+		kw9010_send(temp_outside, 0, 1, 0x24, 0);
+//		blinknum_fast(3);
+//		blinknum(temp_outside/10);
 		// wait one second
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
+		_delay_ms(1000);
 		_delay_ms(1000);
 	}
 
