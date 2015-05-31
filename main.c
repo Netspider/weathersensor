@@ -53,6 +53,7 @@
 #include "ds18x20lib.h"
 #include "am2302.h"
 #include "kw9010.h"
+#include "watchdog.h"
 
 
 #define led_on      PORT_LED |= (1 << LED);
@@ -80,6 +81,7 @@ void blinknum_fast(uint8_t num) {
 
 int main(void)
 {
+	watchdog_init(9);
 	am2302_init();
 	kw9010_init();
 	ds1820_init(DS1820);
@@ -131,6 +133,8 @@ int main(void)
 //		blinknum_fast(3);
 //		blinknum(temp_outside/10);
 		// wait one second
+		watchdog_sleep(2);
+		/*
 		_delay_ms(1000);
 		_delay_ms(1000);
 		_delay_ms(1000);
@@ -146,6 +150,7 @@ int main(void)
 		_delay_ms(1000);
 		_delay_ms(1000);
 		_delay_ms(1000);
+		*/
 	}
 
 	return 0;
