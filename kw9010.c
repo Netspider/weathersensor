@@ -35,8 +35,6 @@
 
 void kw9010_init(void)
 {
-	_repeatCount = 3;
-	_state = 0;
 	return;
 }
 
@@ -110,6 +108,8 @@ void _kw9010_send1(void) {
 }
 
 void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
+	_state = 0;
+	SENSOR_data_low;
 	// no buffering, saves some RAM
 	// hopefully fast enough
 	for(uint8_t count = 0; count < _repeatCount; count++) {

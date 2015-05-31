@@ -31,12 +31,12 @@
 #define	_timeZero 2000
 #define	_timeOne 4000
 #define	_timeDummy 1000
+#define _repeatCount 3
 
 void kw9010_init(void);
 void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t id, uint8_t channel);
 
 uint8_t _state;
-uint8_t _repeatCount;
 
 void _kw9010_sendRaw(uint8_t data[], uint8_t numBits);
 uint8_t _kw9010_generateInternalID(uint8_t id, uint8_t channel);
