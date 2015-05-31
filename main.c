@@ -41,6 +41,7 @@
 #include <util/delay.h>
 
 #include "am2302.h"
+#include "kw9010.h"
 
 
 #define led_on      PORT_LED |= (1 << LED);
@@ -50,6 +51,7 @@
 int main(void)
 {
 	am2302_init();
+	kw9010_init();
 	DDR_LED |= (1 << LED); // define as output
 
 	led_off;
@@ -65,6 +67,8 @@ int main(void)
 		uint8_t error = am2302(&humidity, &temp); // get data from am2302
 		if (!error)
 		{
+			kw9010_send((float)temp/10.0, (float)humidity/10.0, 1, 0x23, 0);
+
 			led_on;
 			for(uint8_t temploop=humidity/10; temploop>0; temploop--)
 				_delay_ms(100);
