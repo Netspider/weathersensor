@@ -67,7 +67,7 @@ int main(void)
 		uint8_t error = am2302(&humidity, &temp); // get data from am2302
 		if (!error)
 		{
-			kw9010_send((float)temp/10.0, (float)humidity/10.0, 1, 0x23, 0);
+			kw9010_send(temp, humidity/10, 1, 0x23, 0);
 
 			led_on;
 			for(uint8_t temploop=humidity/10; temploop>0; temploop--)

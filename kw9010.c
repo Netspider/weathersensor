@@ -129,7 +129,7 @@ void _kw9010_sendRaw(uint8_t data[], uint8_t numBits) {
 	SENSOR_data_low;
 }
 
-void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t id, uint8_t channel) {
+void kw9010_send(int16_t temperature, uint8_t humidity, uint8_t battery_ok, uint8_t id, uint8_t channel) {
   uint8_t data[9] = {0};
   data[0] = _kw9010_generateInternalID(id, channel);
   // battery ok?
@@ -140,24 +140,22 @@ void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t 
   // forced send not implemented yet
   bitClear(data[1], 4);
   // temperature
-  int16_t tmpTemperature = (int16_t)(temperature * 10);
-  if(tmpTemperature < 0) {
+  if(temperature < 0) {
     // negative temperature flag
-    tmpTemperature += 4096;
+    temperature += 4096;
   }
   for(uint8_t i=0; i<4; i++) {
-    if(bitRead(tmpTemperature, i) != 0) {
+    if(bitRead(temperature, i) != 0) {
       bitSet(data[1], 3-i);
     }
   }
   for(uint8_t i=0; i<8; i++) {
-    if(bitRead(tmpTemperature, i+4) != 0) {
+    if(bitRead(temperature, i+4) != 0) {
       bitSet(data[2], 7-i);
     }
   }
   // humidity
-  // round(x) emulated with int(x+0.5)
-  uint8_t tmpHumidity = humidity + 0.5 + 156;
+  uint8_t tmpHumidity = humidity + 156;
   for(uint8_t i=0; i<8; i++) {
     if(bitRead(tmpHumidity, i) != 0) {
       bitSet(data[3], 7-i);

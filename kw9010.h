@@ -34,7 +34,7 @@
 #define _repeatCount 3
 
 void kw9010_init(void);
-void kw9010_send(float temperature, float humidity, uint8_t battery_ok, uint8_t id, uint8_t channel);
+void kw9010_send(int16_t temperature, uint8_t humidity, uint8_t battery_ok, uint8_t id, uint8_t channel);
 
 uint8_t _state;
 
