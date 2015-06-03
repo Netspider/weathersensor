@@ -1,23 +1,12 @@
 /*
  * ATTINY85 Pins:
- * 
- * 1 RESET?
- * 2 KW9010_DATA
- * 3 AM2302_DATA
- * 4 GND
- * 5 DS18B20_DATA
- * 6 ?
- * 7 ?
- * 8 VCC
- * 
- * aktuell:
  * 1     RESET
  * 2 PB3 AM2302_DATA
- * 3 PB4 LED
+ * 3 PB4 *_VCC
  * 4     GND
- * 5 PB0 DS18B20_DATA
+ * 5 PB0 
  * 6 PB1 KW9010_DATA
- * 7 PB2 ?
+ * 7 PB2 DS18B20_DATA
  * 8     VCC
  * 
  * Strom-Messung:
@@ -55,103 +44,56 @@
 #include "kw9010.h"
 #include "watchdog.h"
 
+uint8_t tmpDDR = 0;
+uint8_t tmpPORT = 0;
 
-#define led_on      PORT_LED |= (1 << LED);
-#define led_off     PORT_LED &= ~(1 << LED);
-
-/*
-void blinknum(uint8_t num) {
-	for(uint8_t i=num;i>0;i--) {
-		led_on;
-		_delay_ms(300);
-		led_off;
-		_delay_ms(300);
-	}
+inline void vcc_on(void) {
+	DDRB = tmpDDR;
+	PORTB = tmpPORT;
+	DDR_VCC |= (1 << PIN_VCC); // output
+	_delay_us(1);
+	PORT_VCC |= (1 << PIN_VCC); // HIGH
 }
 
-void blinknum_fast(uint8_t num) {
-	for(uint8_t i=num;i>0;i--) {
-		led_on;
-		_delay_ms(100);
-		led_off;
-		_delay_ms(100);
-	}
+inline void vcc_off(void) {
+	tmpDDR = DDRB;
+	tmpPORT = PORTB;
+	DDRB = 0;
+	PORTB = 0;
+	PORT_VCC &= ~(1 << PIN_VCC);
+	DDR_VCC &= ~(1 << PIN_VCC); //input
 }
-*/
 
 int main(void)
 {
+	tmpDDR = DDRB;
+	tmpPORT = PORTB;
 	watchdog_init(9);
 	am2302_init();
 	kw9010_init();
-	ds1820_init(DS1820);
-
-//	DDR_LED |= (1 << LED); // define as output
-
-//	led_off;
 
  	sei();
 
 	while(1)
 	{
+		vcc_on();
 		uint16_t humidity = 0;
 		uint16_t temp = 0;
 
-		_delay_ms(2200);
-		uint8_t error = am2302(&humidity, &temp); // get data from am2302
+		_delay_ms(200);
+		ds1820_init(DS1820);
+		_delay_ms(1800);
+		uint8_t error = am2302(&humidity, &temp);
 		if (!error)
 		{
 			kw9010_send(temp, humidity/10, 1, 0x23, 0);
-/*
-			blinknum_fast(1);
-			blinknum(temp/100);
-			_delay_ms(500);
-			blinknum_fast(2);
-			blinknum(humidity/100);
 		}
-		else
-		{
-			led_on;
-			_delay_ms(100);
-			led_off;
-			_delay_ms(100);
-			led_on;
-			_delay_ms(100);
-			led_off;
-			_delay_ms(300);
-			for(uint8_t errorloop=error; errorloop>0; errorloop--)
-			{
-				led_on;
-				_delay_ms(300);
-				led_off;
-				_delay_ms(300);
-			}
-*/		}
 
         int16_t temp_outside = ds1820_read_temp(DS1820);
 		kw9010_send(temp_outside, 0, 1, 0x24, 0);
-//		blinknum_fast(3);
-//		blinknum(temp_outside/10);
-		// wait one second
+		vcc_off();
+		//watchdog_sleep(10*60/8);
 		watchdog_sleep(2);
-		/*
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		_delay_ms(1000);
-		*/
 	}
-
 	return 0;
 }

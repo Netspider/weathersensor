@@ -16,9 +16,8 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-
-#define DDR_LED   DDRB
-#define PORT_LED  PORTB
-#define LED       PB4
+#define DDR_VCC		DDRB
+#define PORT_VCC	PORTB
+#define PIN_VCC		PB4
 
 #endif /* MAIN_H_ */

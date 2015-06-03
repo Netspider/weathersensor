@@ -39,7 +39,7 @@
 #define DS1820_PIN	PINB                   //DS1820 PIN
 #define DS1820_PORT	PORTB                  //DS1820 PORT
 #define DS1820_DDR	DDRB                   //DS1820 DDR
-#define DS1820		PB0
+#define DS1820		PB2
 
 //-----------------------------------------
 // Prototypes
