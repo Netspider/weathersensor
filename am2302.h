@@ -22,7 +22,7 @@
 #define DDR_SENSOR   DDRB
 #define PORT_SENSOR  PORTB
 #define PIN_SENSOR   PINB
-#define SENSOR       PB3
+#define SENSOR       PB4
 
 
 uint8_t am2302(uint16_t *humidity, uint16_t *temp);

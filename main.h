@@ -18,6 +18,11 @@
 
 #define DDR_VCC		DDRB
 #define PORT_VCC	PORTB
-#define PIN_VCC		PB4
+#define PIN_VCC		PB3
+
+#define ID1			0x21
+#define ID2			0x22
+
+//#define DEBUGMODE
 
 #endif /* MAIN_H_ */

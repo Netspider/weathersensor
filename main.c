@@ -1,8 +1,8 @@
 /*
  * ATTINY85 Pins:
  * 1     RESET
- * 2 PB3 AM2302_DATA
- * 3 PB4 *_VCC
+ * 2 PB3 *_VCC
+ * 3 PB4 AM2302_DATA
  * 4     GND
  * 5 PB0 
  * 6 PB1 KW9010_DATA
@@ -86,14 +86,17 @@ int main(void)
 		uint8_t error = am2302(&humidity, &temp);
 		if (!error)
 		{
-			kw9010_send(temp, humidity/10, 1, 0x23, 0);
+			kw9010_send(temp, humidity/10, 1, ID1, 0);
 		}
 
         int16_t temp_outside = ds1820_read_temp(DS1820);
-		kw9010_send(temp_outside, 0, 1, 0x24, 0);
+		kw9010_send(temp_outside, 0, 1, ID2, 0);
 		vcc_off();
-		//watchdog_sleep(10*60/8);
-		watchdog_sleep(2);
+#ifdef DEBUGMODE 
+		watchdog_sleep(2); // 16 Sekunden
+#else
+		watchdog_sleep(10*60/8); // 10 Minuten
+#endif
 	}
 	return 0;
 }
