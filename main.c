@@ -82,6 +82,10 @@ int main(void)
 
 		_delay_ms(200);
 		ds1820_init(DS1820);
+		/*
+		 * mit "init":  Temperatur nur auf 0,5°C genau (obwohl im Scratchpad 12bit steht, kommt dort nur 9bit an)
+		 *  * ohne "init": Temperatur ist 85°C
+		 */
 		_delay_ms(1800);
 		uint8_t error = am2302(&humidity, &temp);
 		if (!error)
@@ -89,7 +93,7 @@ int main(void)
 			kw9010_send(temp, humidity/10, 1, ID1, 0);
 		}
 
-        int16_t temp_outside = ds1820_read_temp(DS1820);
+		int16_t temp_outside = ds1820_read_temp(DS1820);
 		kw9010_send(temp_outside, 0, 1, ID2, 0);
 		vcc_off();
 #ifdef DEBUGMODE 
