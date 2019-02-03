@@ -39,7 +39,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "ds18x20lib.h"
+#include "onewire.h"
+#include "ds18x20.h"
 #include "am2302.h"
 #include "kw9010.h"
 #include "watchdog.h"
@@ -80,21 +81,23 @@ int main(void)
 		uint16_t humidity = 0;
 		uint16_t temp = 0;
 
-		_delay_ms(200);
-		ds1820_init(DS1820);
-		/*
-		 * mit "init":  Temperatur nur auf 0,5°C genau (obwohl im Scratchpad 12bit steht, kommt dort nur 9bit an)
-		 *  * ohne "init": Temperatur ist 85°C
-		 */
-		_delay_ms(1800);
 		uint8_t error = am2302(&humidity, &temp);
 		if (!error)
 		{
 			kw9010_send(temp, humidity/10, 1, ID1, 0);
 		}
 
-		int16_t temp_outside = ds1820_read_temp(DS1820);
-		kw9010_send(temp_outside, 0, 1, ID2, 0);
+		onewire_skip_rom();
+		ds18S20_convert_t(0); // normal power
+		_delay_ms(750);
+		onewire_skip_rom();
+		int16_t temp_outside;
+		int rc = ds18S20_read_temp(&temp_outside);
+		if (rc) {
+            		// Serial.println(F("CRC error!"));
+		} else {
+			kw9010_send(temp_outside, 0, 1, ID2, 0);
+		}
 		vcc_off();
 #ifdef DEBUGMODE 
 		watchdog_sleep(2); // 16 Sekunden

@@ -57,10 +57,10 @@
   static configuration of IO port and pin
 */
 /*@{*/
-#define ONEWIRE_BIT  PA0
-#define ONEWIRE_PIN  PINA
-#define ONEWIRE_PORT PORTA
-#define ONEWIRE_DDR  DDRA
+#define ONEWIRE_BIT  PB2
+#define ONEWIRE_PIN  PINB
+#define ONEWIRE_PORT PORTB
+#define ONEWIRE_DDR  DDRB
 /*@}*/
 
 /** \defgroup ONEWIRE_CONTROL ONEWIRE CONTROL
