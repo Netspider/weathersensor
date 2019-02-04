@@ -39,8 +39,11 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#ifdef USE_DS18X20
 #include "onewire.h"
 #include "ds18x20.h"
+#endif
+
 #include "am2302.h"
 #include "kw9010.h"
 #include "watchdog.h"
@@ -80,6 +83,7 @@ int main(void)
 		vcc_on();
 		uint8_t error;
 		
+#ifdef USE_DS18X20
 		int16_t temp_outside;
 		onewire_skip_rom();
 		ds18B20_convert_t(0); // normal power
@@ -89,6 +93,9 @@ int main(void)
 		if (!error) {
 			kw9010_send(temp_outside, 0, 1, ID2, 0);
 		}
+#else
+		_delay_ms(1000);
+#endif
 
 		/////////////////////////////
 		_delay_ms(1000);

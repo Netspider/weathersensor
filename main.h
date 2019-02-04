@@ -23,6 +23,8 @@
 #define ID1			0x21
 #define ID2			0x22
 
+#define USE_DS18X20
+
 //#define DEBUGMODE
 
 #endif /* MAIN_H_ */

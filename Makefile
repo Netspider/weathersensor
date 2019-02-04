@@ -59,6 +59,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
+# TODO ds18x20.c and onewire.c can be deleted if USE_DS18X20 is not set
 SRC = watchdog.c ds18x20.c onewire.c am2302.c kw9010.c $(TARGET).c
 
 
