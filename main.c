@@ -39,7 +39,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "ds18x20lib.h"
+#include "onewire.h"
+#include "ds18x20.h"
 #include "am2302.h"
 #include "kw9010.h"
 #include "watchdog.h"
@@ -77,24 +78,30 @@ int main(void)
 	while(1)
 	{
 		vcc_on();
+		uint8_t error;
+		
+		int16_t temp_outside;
+		onewire_skip_rom();
+		ds18B20_convert_t(0); // normal power
+		_delay_ms(750);
+		onewire_skip_rom();
+		error = ds18B20_read_temp(&temp_outside);
+		if (!error) {
+			kw9010_send(temp_outside, 0, 1, ID2, 0);
+		}
+
+		/////////////////////////////
+		_delay_ms(1000);
+		// am2302 needs around 2 seconds init time after power on
+		// ds18b20 can be done earlier
 		uint16_t humidity = 0;
 		uint16_t temp = 0;
 
-		_delay_ms(200);
-		ds1820_init(DS1820);
-		/*
-		 * mit "init":  Temperatur nur auf 0,5°C genau (obwohl im Scratchpad 12bit steht, kommt dort nur 9bit an)
-		 *  * ohne "init": Temperatur ist 85°C
-		 */
-		_delay_ms(1800);
-		uint8_t error = am2302(&humidity, &temp);
-		if (!error)
-		{
+		error = am2302(&humidity, &temp);
+		if (!error) {
 			kw9010_send(temp, humidity/10, 1, ID1, 0);
 		}
 
-		int16_t temp_outside = ds1820_read_temp(DS1820);
-		kw9010_send(temp_outside, 0, 1, ID2, 0);
 		vcc_off();
 #ifdef DEBUGMODE 
 		watchdog_sleep(2); // 16 Sekunden

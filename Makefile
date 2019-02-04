@@ -59,7 +59,7 @@ TARGET = main
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = watchdog.c ds18x20lib.c am2302.c kw9010.c $(TARGET).c
+SRC = watchdog.c ds18x20.c onewire.c am2302.c kw9010.c $(TARGET).c
 
 
 # List Assembler source files here.
